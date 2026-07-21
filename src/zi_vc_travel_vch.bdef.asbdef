@@ -1,0 +1,133 @@
+managed implementation in class zbp_i_vc_travelvch unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_VC_TRAVEL_VCH //alias <alias_name>
+draft table zvc_dftbati_trvl
+persistent table zvc_travel_vch
+lock master total etag LastChangedAt
+authorization master ( global )
+//early numbering
+late numbering
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+
+  field ( readonly ) TravelId;
+  action ( features : instance ) acceptTravel result [1] $self;
+  validation validateBookingFee on save { create; field BookingFee; }
+  validation validateDates on save { create; field BeginDate, EndDate; }
+
+  association _Booking { create ( features : instance ); with draft; }
+  association _Attachment { create ( features : instance ); with draft; }
+
+  side effects { field BookingFee affects field TotalPrice; }
+
+  draft determine action Prepare { }
+  draft action Activate;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+
+  determination newtotal on modify { create; field BookingFee; }
+
+  mapping for zvc_travel_vch
+    {
+      AgencyId      = agency_id;
+      BeginDate     = begin_date;
+      BookingFee    = booking_fee;
+      CreatedAt     = created_at;
+      CreatedBy     = created_by;
+      CurrencyCode  = currency_code;
+      CustomerId    = customer_id;
+      Description   = description;
+      EndDate       = end_date;
+      LastChangedAt = last_changed_at;
+      LastChangedBy = last_changed_by;
+      OverallStatus = overall_status;
+      TotalPrice    = total_price;
+      TravelId      = travel_id;
+    }
+}
+
+define behavior for ZI_BOOKING_VCH //alias <alias_name>
+draft table zvc_dfabast_bokg
+persistent table zvc_booking_vch
+lock dependent by _Travel
+authorization dependent by _Travel
+late numbering
+//etag master <field_name>
+{
+  update;
+  delete;
+
+  field ( readonly ) TravelId, BookingId;
+  association _Travel { with draft; }
+  association _Bookingsuppl { create; with draft; }
+
+  mapping for zvc_booking_vch
+    {
+      BookingDate   = booking_date;
+      BookingId     = booking_id;
+      BookingStatus = booking_status;
+      CarrierId     = carrier_id;
+      ConnectionId  = connection_id;
+      CurrencyCode  = currency_code;
+      CustomerId    = customer_id;
+      FlightDate    = flight_date;
+      FlightPrice   = flight_price;
+      LastChangedAt = last_changed_at;
+      TravelId      = travel_id;
+    }
+}
+
+define behavior for ZI_BOOKSUPPL_VCH //alias <alias_name>
+draft table zdftabs_booksup
+persistent table zvc_booksupl_vch
+lock dependent by _Travel
+authorization dependent by _Travel
+late numbering
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) TravelId, BookingId;
+  field ( readonly : update ) BookingSupplementId;
+  association _Travel { with draft; }
+  association _Booking { with draft; }
+
+  mapping for zvc_booksupl_vch
+    {
+      BookingId           = booking_id;
+      BookingSupplementId = booking_supplement_id;
+      CurrencyCode        = currency_code;
+      LastChangedAt       = last_changed_at;
+      Price               = price;
+      SupplementId        = supplement_id;
+      TravelId            = travel_id;
+    }
+}
+
+define behavior for zi_vc_attable alias Attachments
+draft table zvc_dafst_atachd
+persistent table zvc_attached
+lock dependent by _Travel
+authorization dependent by _Travel
+late numbering
+{
+  update;
+  delete;
+  field ( readonly ) TravelId, AttachId;
+  association _Travel { with draft; }
+  mapping for zvc_attached
+    {
+      AttachId   = attach_id;
+      Attachment = attachment;
+      Memo       = memo;
+      Filename   = filename;
+      TravelId   = travel_id;
+      Mimetype   = mimetype;
+    }
+}
