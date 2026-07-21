@@ -1,0 +1,5 @@
+CLASS zbp_i_vc_travelvch DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zi_vc_travel_vch.
+ENDCLASS.
+
+CLASS zbp_i_vc_travelvch IMPLEMENTATION.
+ENDCLASS.
