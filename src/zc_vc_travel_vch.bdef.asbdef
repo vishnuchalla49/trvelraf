@@ -1,0 +1,49 @@
+projection;
+strict ( 2 );
+use draft;
+use side effects;
+
+define behavior for ZC_VC_TRAVEL_VCH alias _Travel
+{
+  use create;
+  use update;
+  use delete;
+  use action acceptTravel;
+
+  use action Prepare;
+  use action Activate;
+  use action Discard;
+  use action Edit;
+  use action Resume;
+
+  use association _Booking { create; with draft; }
+  use association _Attachment { create; with draft; }
+
+}
+
+define behavior for ZC_BOOKING_VCH alias _Booking
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _Bookingsuppl { create; with draft; }
+}
+
+define behavior for ZC_BOOKSUPPL_VCH alias _Booksuppl
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _Booking { with draft; }
+}
+//
+define behavior for zc_vc_attable alias _Attachment
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  //
+}
