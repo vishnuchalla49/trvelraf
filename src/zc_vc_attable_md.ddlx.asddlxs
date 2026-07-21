@@ -1,0 +1,38 @@
+@Metadata.layer: #CORE
+@UI.headerInfo:{
+ typeName: 'Attachment',
+ typeNamePlural: 'Attachments',
+ title: {  value: 'AttachId' },
+ description: { value: 'Attachment' }
+ }
+annotate entity zc_vc_attable with
+{
+  @UI.facet: [{
+                id: 'AttachId',
+                purpose: #STANDARD,
+                type : #IDENTIFICATION_REFERENCE,
+                label: 'Attachment Info',
+                position: 10
+             }]
+  @UI.lineItem: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
+  @EndUserText.label: 'Attach Id'
+  AttachId;
+  @UI.lineItem: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  @EndUserText.label: 'Attachment'
+  Attachment;
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  @EndUserText.label: 'Memo'
+  Memo;
+  @UI.lineItem: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  @EndUserText.label: 'Filename'
+  Filename;
+  @UI.lineItem: [{ position: 50 }]
+  @UI.identification: [{ position: 50 }]
+  @EndUserText.label: 'Mimetype'
+  Mimetype;
+
+}
